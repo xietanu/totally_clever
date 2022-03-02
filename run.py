@@ -4,6 +4,7 @@ Platformer Game
 import arcade
 
 from markable_box import MarkableBox
+from multi_sprite_list import MultiSpriteList
 
 # Constants
 SCREEN_WIDTH = 800
@@ -30,14 +31,12 @@ class MyGame(arcade.Window):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         # Create the Sprite lists
-        self.boxes = arcade.SpriteList(use_spatial_hash=True)
-        self.box_texts = arcade.SpriteList(use_spatial_hash=True)
-        self.marks = arcade.SpriteList(use_spatial_hash=True)
+        self.boxes = MultiSpriteList(use_spatial_hash=True)
 
         # This shows using a loop to place multiple sprites horizontally
         for x_coord in range(0, 400, 32):
             box = MarkableBox(
-                self, x_coord + 16, 586, str(round(x_coord / 10)), SCALING
+                x_coord + 16, 586, str(round(x_coord / 10))
             )
             self.boxes.append(box)
 
@@ -47,8 +46,6 @@ class MyGame(arcade.Window):
         self.clear()
         # Code to draw the screen goes here
         self.boxes.draw()
-        for sprite in self.boxes:
-            sprite.draw_sub_sprites()
 
     def on_mouse_press(self, x, y, button, modifiers):
         """Called when the user presses a mouse button."""

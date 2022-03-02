@@ -1,11 +1,12 @@
 """Markable box class"""
-from arcade import Sprite, create_text_sprite, SpriteList
+from arcade import create_text_sprite, Sprite
+from multi_sprite import MultiSprite
 
 
-class MarkableBox(Sprite):
+class MarkableBox(MultiSprite):
     """Class for boxes that can be marked"""
 
-    def __init__(self, center_x, center_y, text="", scale=1):
+    def __init__(self, center_x, center_y, text=""):
         super().__init__(filename="images/mark_box.png")
         self.marked = False
         self.center_x = center_x
@@ -25,7 +26,7 @@ class MarkableBox(Sprite):
             anchor_x="center",
             anchor_y="center",
         )
-        self.sub_sprites = SpriteList(use_spatial_hash=False)
+
         self.sub_sprites.append(self.text_sprite)
 
     def mark_box(self):
