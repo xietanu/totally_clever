@@ -5,7 +5,7 @@ from arcade import Sprite, create_text_sprite, SpriteList
 class MarkableBox(Sprite):
     """Class for boxes that can be marked"""
 
-    def __init__(self, gm, center_x, center_y, text="", scale=1):
+    def __init__(self, center_x, center_y, text="", scale=1):
         super().__init__(filename="images/mark_box.png")
         self.marked = False
         self.center_x = center_x
