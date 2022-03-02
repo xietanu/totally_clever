@@ -1,11 +1,11 @@
 """Markable box class"""
-from arcade import Sprite, create_text_sprite
+from arcade import Sprite, create_text_sprite, SpriteList
 
 
 class MarkableBox(Sprite):
     """Class for boxes that can be marked"""
 
-    def __init__(self, center_x, center_y, text_sprites, text="", scale=1):
+    def __init__(self, gm, center_x, center_y, text="", scale=1):
         super().__init__(filename="images/mark_box.png")
         self.marked = False
         self.center_x = center_x
@@ -16,7 +16,8 @@ class MarkableBox(Sprite):
             center_y=self.center_y,
             hit_box_algorithm="None",
         )
-        self.text = create_text_sprite(
+        self.text = text
+        self.text_sprite = create_text_sprite(
             text,
             start_x=center_x,
             start_y=center_y,
@@ -24,16 +25,17 @@ class MarkableBox(Sprite):
             anchor_x="center",
             anchor_y="center",
         )
-        text_sprites.append(self.text)
+        self.sub_sprites = SpriteList(use_spatial_hash=False)
+        self.sub_sprites.append(self.text_sprite)
 
-    def mark_box(self, sprite_list):
+    def mark_box(self):
         """Mark or unmark the box"""
         self.marked = not self.marked
         if self.marked:
-            sprite_list.append(self.mark)
+            self.sub_sprites.append(self.mark)
         else:
             self.mark.remove_from_sprite_lists()
 
-    def draw(self, *, filter=None, pixelated=None, blend_function=None):
-        super().draw(filter=filter, pixelated=pixelated, blend_function=blend_function)
-        self.text.draw()
+    def draw_sub_sprites(self):
+        """Draw sub sprites"""
+        self.sub_sprites.draw()

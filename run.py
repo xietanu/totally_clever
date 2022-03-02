@@ -37,7 +37,7 @@ class MyGame(arcade.Window):
         # This shows using a loop to place multiple sprites horizontally
         for x_coord in range(0, 400, 32):
             box = MarkableBox(
-                x_coord + 16, 586, self.box_texts, str(round(x_coord / 10)), SCALING
+                self, x_coord + 16, 586, str(round(x_coord / 10)), SCALING
             )
             self.boxes.append(box)
 
@@ -47,23 +47,23 @@ class MyGame(arcade.Window):
         self.clear()
         # Code to draw the screen goes here
         self.boxes.draw()
-        self.box_texts.draw()
-        self.marks.draw()
+        for sprite in self.boxes:
+            sprite.draw_sub_sprites()
 
     def on_mouse_press(self, x, y, button, modifiers):
         """Called when the user presses a mouse button."""
         boxes = arcade.get_sprites_at_point((x, y), self.boxes)
 
         if len(boxes) > 0:
-            boxes[0].mark_box(self.marks)
+            boxes[0].mark_box()
 
-    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
-        """Called when the user presses a mouse button."""
-        pass
+    # def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
+    #     """Called when the user presses a mouse button."""
+    #     pass
 
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
-        """User moves mouse"""
-        pass
+    # def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+    #     """User moves mouse"""
+    #     pass
 
 
 def main():
