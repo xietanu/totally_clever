@@ -1,5 +1,5 @@
 """Markable box class"""
-from arcade import create_text_sprite, Sprite
+from arcade import create_text_image, create_text_sprite, Sprite, Texture
 from multi_sprite import MultiSprite
 
 
@@ -37,6 +37,14 @@ class MarkableBox(MultiSprite):
         else:
             self.mark.remove_from_sprite_lists()
 
-    def draw_sub_sprites(self):
-        """Draw sub sprites"""
-        self.sub_sprites.draw()
+    def update_text(self, new_text):
+        """Update the text displayed in the box"""
+        self.text = new_text
+        self.text_sprite.texture = Texture(
+            name=new_text,
+            image=create_text_image(
+                new_text,
+                text_color=(0, 0, 0),
+            ),
+            hit_box_algorithm="None",
+        )
