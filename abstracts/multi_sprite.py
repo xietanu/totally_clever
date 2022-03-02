@@ -1,6 +1,6 @@
 """A subclass of SpriteList for containing and drawing MultiSprites"""
 from arcade import Sprite
-import multi_sprite_list as msl
+import abstracts.multi_sprite_list as msl
 
 
 class MultiSprite(Sprite):

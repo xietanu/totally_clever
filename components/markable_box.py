@@ -1,6 +1,6 @@
 """Markable box class"""
 from arcade import create_text_image, create_text_sprite, Sprite, Texture
-from multi_sprite import MultiSprite
+from abstracts.multi_sprite import MultiSprite
 
 
 class MarkableBox(MultiSprite):
