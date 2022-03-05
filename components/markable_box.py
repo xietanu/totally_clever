@@ -1,17 +1,22 @@
 """Markable box class"""
 from arcade import create_text_image, create_text_sprite, Sprite, Texture
 from abstracts.multi_sprite import MultiSprite
+from abstracts.coords import Coords
 
 
 class MarkableBox(MultiSprite):
     """Class for boxes that can be marked"""
 
-    def __init__(self, score_category, center_x, center_y, text=""):
+    def __init__(
+        self, score_category: MultiSprite, center: Coords, text: str = "", prereq=None
+    ):
         super().__init__(
-            filename="images/mark_box.png", center_x=center_x, center_y=center_y
+            filename="images/mark_box.png", center_x=center.x_coord, center_y=center.y_coord
         )
         self.marked = False
         self.markable = False
+
+        self.prereq = prereq
 
         self.mark = Sprite(
             filename="images/mark_box_mark.png",
@@ -19,11 +24,12 @@ class MarkableBox(MultiSprite):
             center_y=self.center_y,
             hit_box_algorithm="None",
         )
+
         self.text = text
         self.text_sprite = create_text_sprite(
             text,
-            start_x=center_x,
-            start_y=center_y,
+            start_x=center.x_coord,
+            start_y=center.y_coord,
             color=(0, 0, 0),
             anchor_x="center",
             anchor_y="center",
@@ -39,8 +45,8 @@ class MarkableBox(MultiSprite):
 
         self.marked = True
         self.markable = False
-        self.score_category.update_score_trackers()
         self.sub_sprites.append(self.mark)
+        self.score_category.update_markables()
         return True
 
     def update_text(self, new_text):
@@ -54,3 +60,10 @@ class MarkableBox(MultiSprite):
             ),
             hit_box_algorithm="None",
         )
+
+    def update_markable(self):
+        """Check any prerequisite conditions on being marked"""
+        if (self.prereq is None or self.prereq.marked) and not self.marked:
+            self.markable = True
+        else:
+            self.markable = False
