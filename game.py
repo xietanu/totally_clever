@@ -8,7 +8,7 @@ from abstracts.multi_sprite_list import MultiSpriteList
 
 # Constants
 SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_HEIGHT = 800
 SCREEN_TITLE = "Totally Clever"
 
 SCALING = 1

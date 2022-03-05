@@ -6,11 +6,13 @@ from abstracts.multi_sprite import MultiSprite
 class MarkableBox(MultiSprite):
     """Class for boxes that can be marked"""
 
-    def __init__(self, center_x, center_y, text=""):
-        super().__init__(filename="images/mark_box.png")
+    def __init__(self, score_category, center_x, center_y, text=""):
+        super().__init__(
+            filename="images/mark_box.png", center_x=center_x, center_y=center_y
+        )
         self.marked = False
-        self.center_x = center_x
-        self.center_y = center_y
+        self.markable = False
+
         self.mark = Sprite(
             filename="images/mark_box_mark.png",
             center_x=self.center_x,
@@ -26,16 +28,20 @@ class MarkableBox(MultiSprite):
             anchor_x="center",
             anchor_y="center",
         )
+        self.score_category = score_category
 
         self.sub_sprites.append(self.text_sprite)
 
     def mark_box(self):
         """Mark or unmark the box"""
-        self.marked = not self.marked
-        if self.marked:
-            self.sub_sprites.append(self.mark)
-        else:
-            self.mark.remove_from_sprite_lists()
+        if not self.markable:
+            return False
+
+        self.marked = True
+        self.markable = False
+        self.score_category.update_score_trackers()
+        self.sub_sprites.append(self.mark)
+        return True
 
     def update_text(self, new_text):
         """Update the text displayed in the box"""
