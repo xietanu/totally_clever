@@ -34,11 +34,12 @@ class TotallyClever(arcade.Window):
         self.score_categories = MultiSpriteList(use_spatial_hash=True)
         green_category = ScoreCategory(
             "images/GreenCategoryBox.png",
-            300,
-            0,
+            Coords(300,0),
             mark_prereq_mode=MarkPrereqMode.PREVIOUS,
         )
         self.score_categories.append(green_category)
+
+        green_category.add_decorative_sprite("images/green_icon.png", Coords(30, 50))
 
         green_box_texts = [
             ">0",
@@ -54,7 +55,7 @@ class TotallyClever(arcade.Window):
             ">5",
         ]
         for x_offset, text in enumerate(green_box_texts):
-            green_category.add_box(Coords(32 + 40 * x_offset,32), text=text)
+            green_category.add_box(Coords(70 + 40 * x_offset, 50), text=text)
 
     def on_draw(self):
         """Render the screen."""

@@ -1,6 +1,7 @@
 """Class for storing 2D coords"""
 from dataclasses import dataclass
 
+
 @dataclass
 class Coords:
     """Class for storing 2D coords"""

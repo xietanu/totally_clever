@@ -11,7 +11,9 @@ class MarkableBox(MultiSprite):
         self, score_category: MultiSprite, center: Coords, text: str = "", prereq=None
     ):
         super().__init__(
-            filename="images/mark_box.png", center_x=center.x_coord, center_y=center.y_coord
+            filename="images/mark_box.png",
+            center_x=center.x_coord,
+            center_y=center.y_coord,
         )
         self.marked = False
         self.markable = False

@@ -1,7 +1,7 @@
 """Score cateogry class"""
 from enum import Enum
 
-from arcade import SpriteList, get_sprites_at_point
+from arcade import Sprite, SpriteList, get_sprites_at_point
 from abstracts.coords import Coords
 
 from abstracts.multi_sprite import MultiSprite
@@ -50,7 +50,7 @@ class ScoreCategory(MultiSprite):
 
     def add_box(
         self,
-        offset:Coords,
+        offset: Coords,
         text: str = "",
     ):
         """Add a new box to the score category, with x and y set relative to the box"""
@@ -67,6 +67,7 @@ class ScoreCategory(MultiSprite):
             text=text,
             prereq=prereq,
         )
+
         if (
             self.mark_prereq_mode.value == MarkPrereqMode.NONE.value
             or len(self.boxes) == 0
@@ -75,6 +76,14 @@ class ScoreCategory(MultiSprite):
 
         self.boxes.append(box)
         self.sub_sprites.append(box)
+
+    def add_decorative_sprite(self, filename, offset: Coords):
+        """Add a decorative sprite to the ScoreCategory."""
+        position = self.origin + offset
+
+        self.sub_sprites.append(
+            Sprite(filename, center_x=position.x_coord, center_y=position.y_coord)
+        )
 
     def on_mouse_press(self, pointer: Coords):
         """Manages click on the score_category"""
