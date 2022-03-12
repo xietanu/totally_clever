@@ -47,5 +47,5 @@ jobs:
                 auto-update-conda: true
                 activate-environment: totally_clever
                 environment-file: environment.yml
-            - name: Executre tests
-              run: python -u -m pytest --headless tests
+            - name: Execute tests
+              run: python -u -m pytest tests
