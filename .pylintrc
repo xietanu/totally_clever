@@ -63,7 +63,7 @@ suggestion-mode=yes
 unsafe-load-any-extension=no
 
 
-init-hook='import sys; sys.path.append("D:/Dropbox/Python/totally_clever")'
+init-hook='import sys; sys.path.append("C:/Users/sutto/Dropbox/Python/totally_clever")'
 
 [MESSAGES CONTROL]
 
