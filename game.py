@@ -16,7 +16,6 @@ SCREEN_TITLE = "Totally Clever"
 
 SCALING = 1
 
-
 class TotallyClever(arcade.Window):
     """
     Totally Clever game class.
