@@ -2,9 +2,11 @@
 Main game class.
 """
 import arcade
+from abstracts.colours import Colours
 
 from abstracts.coords import Coords
 from abstracts.multi_sprite_list import MultiSpriteList
+from components.die import Die
 
 from components.score_category import ScoreCategory, MarkPrereqMode
 
@@ -25,12 +27,15 @@ class TotallyClever(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         self.score_categories = None
+        self.dice = None
 
         arcade.set_background_color((0, 30, 50))
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         self.score_categories = MultiSpriteList(use_spatial_hash=True)
+        self.dice = arcade.SpriteList()
+
         green_category = ScoreCategory(
             "images/GreenCategoryBox.png",
             Coords(300,0),
@@ -56,10 +61,13 @@ class TotallyClever(arcade.Window):
         for x_offset, text in enumerate(green_box_texts):
             green_category.add_box(Coords(70 + 40 * x_offset, 50), text=text)
 
+        self.dice.append(Die(Coords(64,64), colour=Colours.FLAME.value))
+
     def on_draw(self):
         """Render the screen."""
         self.clear()
         self.score_categories.draw()
+        self.dice.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
         """Called when the user presses a mouse button."""
