@@ -11,12 +11,12 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - uses: conda-incubator/setup-miniconda@v2
-                with:
-                    auto-update-conda: true
-                    activate-environment: totally_clever
-                    environment-file: environment.yml
+              with:
+                auto-update-conda: true
+                activate-environment: totally_clever
+                environment-file: environment.yml
             - name: Run formater
-                run: black --check ./
+              run: black --check ./
 
     linting-check:
         name: 'Check code for linting errors'
@@ -27,12 +27,12 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - uses: conda-incubator/setup-miniconda@v2
-                with:
-                    auto-update-conda: true
-                    activate-environment: totally_clever
-                    environment-file: environment.yml
+              with:
+                auto-update-conda: true
+                activate-environment: totally_clever
+                environment-file: environment.yml
             - name: Run linter
-                run: pylint $(pwd)
+              run: pylint $(pwd)
 
     testing:
         name: 'Running tests'
@@ -43,9 +43,9 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - uses: conda-incubator/setup-miniconda@v2
-                with:
-                    auto-update-conda: true
-                    activate-environment: totally_clever
-                    environment-file: environment.yml
+              with:
+                auto-update-conda: true
+                activate-environment: totally_clever
+                environment-file: environment.yml
             - name: Executre tests
-                run: python -u -m pytest --headless tests
+              run: python -u -m pytest --headless tests
