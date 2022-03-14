@@ -18,6 +18,7 @@ SCREEN_TITLE = "Totally Clever"
 
 SCALING = 1
 
+
 class TotallyClever(arcade.Window):
     """
     Totally Clever game class.
@@ -28,17 +29,20 @@ class TotallyClever(arcade.Window):
 
         self.score_categories = None
         self.dice = None
+        self.timer = 0
 
         arcade.set_background_color((0, 30, 50))
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
+        self.timer = 0
+
         self.score_categories = MultiSpriteList(use_spatial_hash=True)
         self.dice = arcade.SpriteList()
 
         green_category = ScoreCategory(
             "images/GreenCategoryBox.png",
-            Coords(300,0),
+            Coords(300, 0),
             mark_prereq_mode=MarkPrereqMode.PREVIOUS,
         )
         self.score_categories.append(green_category)
@@ -61,7 +65,11 @@ class TotallyClever(arcade.Window):
         for x_offset, text in enumerate(green_box_texts):
             green_category.add_box(Coords(70 + 40 * x_offset, 50), text=text)
 
-        self.dice.append(Die(Coords(64,64), colour=Colours.FLAME.value))
+        self.dice.append(Die(Coords(64, 64), colour=Colours.SKY.value))
+        self.dice.append(Die(Coords(64, 128), colour=Colours.ALABASTER.value))
+        self.dice.append(Die(Coords(64, 192), colour=Colours.SALMON.value))
+        self.dice.append(Die(Coords(64, 256), colour=Colours.SUNGLOW.value))
+        self.dice.append(Die(Coords(64, 318), colour=Colours.LIBERTY.value))
 
     def on_draw(self):
         """Render the screen."""
@@ -69,17 +77,14 @@ class TotallyClever(arcade.Window):
         self.score_categories.draw()
         self.dice.draw()
 
+    def on_update(self, delta_time: float):
+        super().on_update(delta_time)
+        for die in self.dice:
+            die.update_animation()
+
     def on_mouse_press(self, x, y, button, modifiers):
         """Called when the user presses a mouse button."""
         categories = arcade.get_sprites_at_point((x, y), self.score_categories)
 
         if len(categories) > 0:
             categories[0].on_mouse_press(Coords(x, y))
-
-    # def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
-    #     """Called when the user presses a mouse button."""
-    #     pass
-
-    # def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
-    #     """User moves mouse"""
-    #     pass
