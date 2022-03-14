@@ -34,7 +34,7 @@ class TotallyClever(arcade.Window):
         self.score_categories = MultiSpriteList(use_spatial_hash=True)
         green_category = ScoreCategory(
             "images/GreenCategoryBox.png",
-            Coords(300,0),
+            Coords(300, 0),
             mark_prereq_mode=MarkPrereqMode.PREVIOUS,
         )
         self.score_categories.append(green_category)
