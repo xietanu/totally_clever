@@ -38,7 +38,7 @@ class TotallyClever(arcade.Window):
         self.timer = 0
 
         self.score_categories = MultiSpriteList(use_spatial_hash=True)
-        self.dice = arcade.SpriteList()
+        self.dice = MultiSpriteList()
 
         green_category = ScoreCategory(
             "images/GreenCategoryBox.png",
@@ -85,6 +85,10 @@ class TotallyClever(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         """Called when the user presses a mouse button."""
         categories = arcade.get_sprites_at_point((x, y), self.score_categories)
+        dice = arcade.get_sprites_at_point((x, y), self.dice)
 
         if len(categories) > 0:
             categories[0].on_mouse_press(Coords(x, y))
+
+        if len(dice) > 0:
+            dice[0].on_mouse_press()

@@ -12,7 +12,7 @@ def test_hex_colour_to_rgb_tuple_white():
     assert hex_colour_to_rgb_tuple("FFFFFF") == (255, 255, 255)
 
 
-def test_hex_colour_to_rgb_tuple_black():
+def test_hex_colour_to_rgb_tuple_grey():
     """Test for a basic grey"""
     assert hex_colour_to_rgb_tuple("808080") == (128, 128, 128)
 
