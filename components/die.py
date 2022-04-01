@@ -4,7 +4,7 @@ from enum import Enum
 import random
 from arcade import Sprite, load_spritesheet
 
-from visual_elements.colours import Colour, Colours
+from visual_elements.colours import Colours
 from abstracts.coords import Coords
 from abstracts.multi_sprite import MultiSprite
 
@@ -29,7 +29,10 @@ class Die(MultiSprite):
     """Class for die component"""
 
     def __init__(
-        self, center: Coords, colour: Colour = Colours.SKY.value, **sprite_kwargs
+        self,
+        center: Coords,
+        colour: tuple[int, int, int] = Colours.SKY.value,
+        **sprite_kwargs
     ):
 
         super().__init__(
