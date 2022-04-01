@@ -8,7 +8,7 @@ from abstracts.coords import Coords
 from abstracts.multi_sprite_list import MultiSpriteList
 from components.die import Die
 
-from components.score_category import ScoreCategory, MarkPrereqMode
+from components.score_category import ScoreCategory, MarkPrereqMode, ScoreCategorySpriteFilepath
 
 
 # Constants
@@ -41,13 +41,14 @@ class TotallyClever(arcade.Window):
         self.dice = MultiSpriteList()
 
         green_category = ScoreCategory(
-            "images/GreenCategoryBox.png",
+            ScoreCategorySpriteFilepath.SHORT.value,
+            Colours.SUNGLOW.value,
             Coords(300, 0),
             mark_prereq_mode=MarkPrereqMode.PREVIOUS,
         )
         self.score_categories.append(green_category)
 
-        green_category.add_decorative_sprite("images/green_icon.png", Coords(30, 50))
+        green_category.add_decorative_sprite("images/arrow_icon.png", Coords(30, 50), apply_color = True)
 
         green_box_texts = [
             ">0",

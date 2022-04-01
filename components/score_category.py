@@ -1,26 +1,28 @@
 """Score cateogry class"""
-from enum import Enum
+from enum import Enum, auto
 
 from arcade import Sprite, SpriteList, get_sprites_at_point
+from abstracts.colours import Colours
 from abstracts.coords import Coords
 
 from abstracts.multi_sprite import MultiSprite
 from components.markable_box import MarkableBox
 
+class ScoreCategorySpriteFilepath(Enum):
+    SHORT = "images/short_area.png"
 
 class ScoreModes(Enum):
     """Provides the score mode for the different categories"""
 
-    SUM = 1
-    COUNT = 2
-    MATCHED = 3
-
+    SUM = auto()
+    COUNT = auto()
+    MATCHED = auto()
 
 class MarkPrereqMode(Enum):
     """Provides the mode to determine how boxes become available"""
 
-    PREVIOUS = 1
-    NONE = 0
+    NONE = auto()
+    PREVIOUS = auto()
 
 
 class ScoreCategory(MultiSprite):
@@ -29,9 +31,10 @@ class ScoreCategory(MultiSprite):
     def __init__(
         self,
         filename: str,
+        colour: str,
         origin: Coords,
-        score_mode: Enum = ScoreModes.SUM,
-        mark_prereq_mode: Enum = MarkPrereqMode.NONE,
+        score_mode: ScoreModes = ScoreModes.SUM,
+        mark_prereq_mode: MarkPrereqMode = MarkPrereqMode.NONE,
         **MultiSpriteArgs
     ):
         super().__init__(filename=filename, **MultiSpriteArgs)
@@ -40,6 +43,8 @@ class ScoreCategory(MultiSprite):
         self.center_y = origin.y_coord + int(self.texture.size[1] / 2)
 
         self.boxes = SpriteList(use_spatial_hash=True)
+
+        self.color = colour
 
         self.score_mode = score_mode
         self.score_trackers = None
@@ -77,12 +82,17 @@ class ScoreCategory(MultiSprite):
         self.boxes.append(box)
         self.sub_sprites.append(box)
 
-    def add_decorative_sprite(self, filename, offset: Coords):
+    def add_decorative_sprite(self, filename, offset: Coords, *, apply_color: bool = False):
         """Add a decorative sprite to the ScoreCategory."""
         position = self.origin + offset
 
+        new_sprite = Sprite(filename, center_x=position.x_coord, center_y=position.y_coord)
+
+        if apply_color:
+            new_sprite.color = self.color
+
         self.sub_sprites.append(
-            Sprite(filename, center_x=position.x_coord, center_y=position.y_coord)
+            new_sprite
         )
 
     def on_mouse_press(self, pointer: Coords):
