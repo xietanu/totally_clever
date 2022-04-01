@@ -24,6 +24,8 @@ class AtLeastCategory(ScoreCategory):
         if len(self.boxes) > 1:
             box.set_prereq(self.boxes[-2])
 
+        return box
+
     def get_score(self) -> int:
         """
         Calculates and returns the score for this category.
@@ -31,4 +33,11 @@ class AtLeastCategory(ScoreCategory):
         Returns:
             int: The calculated score.
         """
-        return sum([1 if box.marked else 0 for box in self.boxes])  # To implement
+        # TODO: Implement
+        return sum(
+            [
+                1 if box.marked else 0
+                for box in self.boxes
+                if isinstance(box, MarkableBox)
+            ]
+        )

@@ -7,9 +7,7 @@ from abstracts.coords import Coords
 class MarkableBox(MultiSprite):
     """Class for boxes that can be marked"""
 
-    def __init__(
-        self, score_category: MultiSprite, center: Coords, text: str = "", prereq=None
-    ):
+    def __init__(self, score_category, center: Coords, text: str = "", prereq=None):
         super().__init__(
             filename="images/mark_box.png",
             center_x=center.x_coord,
@@ -53,7 +51,7 @@ class MarkableBox(MultiSprite):
 
     def set_prereq(self, box):
         """
-        Set the box requiered to be marked before this one can be marked.
+        Set the box required to be marked before this one can be marked.
 
         Args:
             box (MarkableBox)): Prerequisite box

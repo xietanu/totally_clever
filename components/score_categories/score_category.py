@@ -1,5 +1,7 @@
-"""Score cateogry class"""
-from arcade import Sprite, SpriteList, get_sprites_at_point
+"""Score category class"""
+from arcade import Sprite
+from arcade.sprite_list.sprite_list import SpriteList
+from arcade.sprite_list.spatial_hash import get_sprites_at_point
 from abstracts.coords import Coords
 
 from abstracts.multi_sprite import MultiSprite
@@ -9,7 +11,13 @@ from components.markable_box import MarkableBox
 class ScoreCategory(MultiSprite):
     """A general class for the scoring categories for specific colours to build on top of"""
 
-    def __init__(self, filename: str, colour: str, origin: Coords, **MultiSpriteArgs):
+    def __init__(
+        self,
+        filename: str,
+        colour: tuple[int, int, int],
+        origin: Coords,
+        **MultiSpriteArgs
+    ):
         super().__init__(filename=filename, **MultiSpriteArgs)
         self.origin = origin
         self.center_x = origin.x_coord + int(self.texture.size[0] / 2)
@@ -56,13 +64,14 @@ class ScoreCategory(MultiSprite):
         """Manages click on the score_category"""
         boxes = get_sprites_at_point((pointer.x_coord, pointer.y_coord), self.boxes)
 
-        if len(boxes) > 0:
+        if len(boxes) > 0 and isinstance(boxes[0], MarkableBox):
             boxes[0].mark_box()
 
     def update_markables(self) -> None:
         """Update the markable status for all boxes"""
         for box in self.boxes:
-            box.update_markable()
+            if isinstance(box, MarkableBox):
+                box.update_markable()
 
     def get_score(self) -> int:
         """
