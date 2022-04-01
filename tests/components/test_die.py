@@ -1,6 +1,6 @@
 """Tests for the Die component"""
 from abstracts.coords import Coords
-from abstracts.colours import Colours
+from visual_elements.colours import Colours
 from components.die import Die
 
 

@@ -2,13 +2,13 @@
 Main game class.
 """
 import arcade
-from abstracts.colours import Colours
 
 from abstracts.coords import Coords
 from abstracts.multi_sprite_list import MultiSpriteList
 from components.die import Die
-
-from components.score_category import ScoreCategory, MarkPrereqMode
+from components.score_categories.at_least_category import AtLeastCategory
+from visual_elements.colours import Colours
+from visual_elements.standard_sprites import ScoreCategorySpriteFilepath
 
 
 # Constants
@@ -40,14 +40,16 @@ class TotallyClever(arcade.Window):
         self.score_categories = MultiSpriteList(use_spatial_hash=True)
         self.dice = MultiSpriteList()
 
-        green_category = ScoreCategory(
-            "images/GreenCategoryBox.png",
+        at_least_category = AtLeastCategory(
+            ScoreCategorySpriteFilepath.SHORT.value,
+            Colours.SUNGLOW.value,
             Coords(300, 0),
-            mark_prereq_mode=MarkPrereqMode.PREVIOUS,
         )
-        self.score_categories.append(green_category)
+        self.score_categories.append(at_least_category)
 
-        green_category.add_decorative_sprite("images/green_icon.png", Coords(30, 50))
+        at_least_category.add_decorative_sprite(
+            "images/arrow_icon.png", Coords(30, 50), apply_color=True
+        )
 
         green_box_texts = [
             ">0",
@@ -63,7 +65,7 @@ class TotallyClever(arcade.Window):
             ">5",
         ]
         for x_offset, text in enumerate(green_box_texts):
-            green_category.add_box(Coords(70 + 40 * x_offset, 50), text=text)
+            at_least_category.add_box(Coords(70 + 40 * x_offset, 50), label=text)
 
         self.dice.append(Die(Coords(64, 64), colour=Colours.SKY.value))
         self.dice.append(Die(Coords(64, 128), colour=Colours.ALABASTER.value))
