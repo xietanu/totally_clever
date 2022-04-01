@@ -2,7 +2,7 @@
 from arcade import SpriteList
 from abstracts.coords import Coords
 
-from components.score_category import ScoreCategory, ScoreModes
+from components.score_categories.score_category import ScoreCategory, ScoreModes
 
 
 def test_center_x():

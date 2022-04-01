@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from abstracts.hex_color_to_rgb_tuple import hex_colour_to_rgb_tuple
+from visual_elements.hex_color_to_rgb_tuple import hex_colour_to_rgb_tuple
 
 
 @dataclass

@@ -4,7 +4,7 @@ from enum import Enum
 import random
 from arcade import Sprite, load_spritesheet
 
-from abstracts.colours import Colour, Colours
+from visual_elements.colours import Colour, Colours
 from abstracts.coords import Coords
 from abstracts.multi_sprite import MultiSprite
 

@@ -51,6 +51,15 @@ class MarkableBox(MultiSprite):
         self.score_category.update_markables()
         return True
 
+    def set_prereq(self, box):
+        """
+        Set the box requiered to be marked before this one can be marked.
+
+        Args:
+            box (MarkableBox)): Prerequisite box
+        """
+        self.prereq = box
+
     def update_text(self, new_text):
         """Update the text displayed in the box"""
         self.text = new_text

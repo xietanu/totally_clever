@@ -1,5 +1,5 @@
 """Tests for hex_colour_to_rgb_tuple"""
-from abstracts.hex_color_to_rgb_tuple import hex_colour_to_rgb_tuple
+from visual_elements.hex_color_to_rgb_tuple import hex_colour_to_rgb_tuple
 
 
 def test_hex_colour_to_rgb_tuple_black():
