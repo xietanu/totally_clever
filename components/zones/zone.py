@@ -1,21 +1,25 @@
-"""Score cateogry class"""
-from arcade import Sprite, SpriteList, get_sprites_at_point
-from abstracts.coords import Coords
-
-from abstracts.multi_sprite import MultiSprite
-from components.markable_box import MarkableBox
+"""Score zone classes for each category"""
+import arcade
+from components import coords, markable_box
+import sprites
 
 
-class ScoreCategory(MultiSprite):
+class Zone(sprites.MultiSprite):
     """A general class for the scoring categories for specific colours to build on top of"""
 
-    def __init__(self, filename: str, colour: str, origin: Coords, **MultiSpriteArgs):
+    def __init__(
+        self,
+        filename: str,
+        colour: tuple[int, int, int],
+        origin: coords.Coords,
+        **MultiSpriteArgs
+    ):
         super().__init__(filename=filename, **MultiSpriteArgs)
         self.origin = origin
         self.center_x = origin.x_coord + int(self.texture.size[0] / 2)
         self.center_y = origin.y_coord + int(self.texture.size[1] / 2)
 
-        self.boxes = SpriteList(use_spatial_hash=True)
+        self.boxes = arcade.SpriteList(use_spatial_hash=True)
 
         self.color = colour
 
@@ -23,11 +27,11 @@ class ScoreCategory(MultiSprite):
 
     def add_box(
         self,
-        offset: Coords,
+        offset: coords.Coords,
         label: str = "",
-    ) -> MarkableBox:
+    ) -> markable_box.MarkableBox:
         """Add a new box to the score category, with x and y set relative to the box"""
-        box = MarkableBox(self, center=self.origin + offset, text=label)
+        box = markable_box.MarkableBox(self, center=self.origin + offset, text=label)
 
         if len(self.boxes) == 0:
             box.markable = True
@@ -38,12 +42,12 @@ class ScoreCategory(MultiSprite):
         return box
 
     def add_decorative_sprite(
-        self, filename, offset: Coords, *, apply_color: bool = False
+        self, filename, offset: coords.Coords, *, apply_color: bool = False
     ):
         """Add a decorative sprite to the ScoreCategory."""
         position = self.origin + offset
 
-        new_sprite = Sprite(
+        new_sprite = arcade.Sprite(
             filename, center_x=position.x_coord, center_y=position.y_coord
         )
 
@@ -52,17 +56,20 @@ class ScoreCategory(MultiSprite):
 
         self.sub_sprites.append(new_sprite)
 
-    def on_mouse_press(self, pointer: Coords):
+    def on_mouse_press(self, pointer: coords.Coords):
         """Manages click on the score_category"""
-        boxes = get_sprites_at_point((pointer.x_coord, pointer.y_coord), self.boxes)
+        boxes = arcade.get_sprites_at_point(
+            (pointer.x_coord, pointer.y_coord), self.boxes
+        )
 
-        if len(boxes) > 0:
+        if len(boxes) > 0 and isinstance(boxes[0], markable_box.MarkableBox):
             boxes[0].mark_box()
 
     def update_markables(self) -> None:
         """Update the markable status for all boxes"""
-        for box in self.boxes:
-            box.update_markable()
+        for markable in self.boxes:
+            if isinstance(markable, markable_box.MarkableBox):
+                markable.update_markable()
 
     def get_score(self) -> int:
         """

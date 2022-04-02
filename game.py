@@ -3,13 +3,10 @@ Main game class.
 """
 import arcade
 
-from abstracts.coords import Coords
-from abstracts.multi_sprite_list import MultiSpriteList
-from components.die import Die
-from components.score_categories.at_least_category import AtLeastCategory
-from visual_elements.colours import Colours
-from visual_elements.standard_sprites import ScoreCategorySpriteFilepath
-
+import colours
+import components
+import game_state
+import sprites
 
 # Constants
 SCREEN_WIDTH = 800
@@ -25,33 +22,36 @@ class TotallyClever(arcade.Window):
     """
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-
-        self.score_categories = None
-        self.dice = None
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)  # type: ignore
+        arcade.set_background_color((0, 30, 50))
         self.timer = 0
 
-        arcade.set_background_color((0, 30, 50))
+        self.zones = sprites.MultiSpriteList(use_spatial_hash=True)
+        self.dice = sprites.MultiSpriteList()
+        self.buttons = sprites.MultiSpriteList(use_spatial_hash=True)
+
+        self.state = game_state.State.ROLLING
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         self.timer = 0
 
-        self.score_categories = MultiSpriteList(use_spatial_hash=True)
-        self.dice = MultiSpriteList()
+        self.zones = sprites.MultiSpriteList(use_spatial_hash=True)
+        self.dice = sprites.MultiSpriteList()
+        self.buttons = sprites.MultiSpriteList(use_spatial_hash=True)
 
-        at_least_category = AtLeastCategory(
-            ScoreCategorySpriteFilepath.SHORT.value,
-            Colours.SUNGLOW.value,
-            Coords(300, 0),
+        at_least_category = components.zones.AtLeast(
+            sprites.filepaths.ZoneSprite.SHORT.value,
+            colours.Category.SUNGLOW.value,
+            components.Coords(300, 0),
         )
-        self.score_categories.append(at_least_category)
+        self.zones.append(at_least_category)
 
         at_least_category.add_decorative_sprite(
-            "images/arrow_icon.png", Coords(30, 50), apply_color=True
+            "images/arrow_icon.png", components.Coords(30, 50), apply_color=True
         )
 
-        green_box_texts = [
+        at_least_box_texts = [
             ">0",
             ">1",
             ">2",
@@ -64,33 +64,65 @@ class TotallyClever(arcade.Window):
             ">4",
             ">5",
         ]
-        for x_offset, text in enumerate(green_box_texts):
-            at_least_category.add_box(Coords(70 + 40 * x_offset, 50), label=text)
+        for x_offset, text in enumerate(at_least_box_texts):
+            at_least_category.add_box(
+                components.Coords(70 + 40 * x_offset, 50), label=text
+            )
 
-        self.dice.append(Die(Coords(64, 64), colour=Colours.SKY.value))
-        self.dice.append(Die(Coords(64, 128), colour=Colours.ALABASTER.value))
-        self.dice.append(Die(Coords(64, 192), colour=Colours.SALMON.value))
-        self.dice.append(Die(Coords(64, 256), colour=Colours.SUNGLOW.value))
-        self.dice.append(Die(Coords(64, 318), colour=Colours.LIBERTY.value))
+        for y_offset_multiplier, colour in enumerate(colours.Category):
+            self.dice.append(
+                components.Die(
+                    components.Coords(64, 64 + 64 * y_offset_multiplier),
+                    colour=colour.value,
+                )
+            )
+
+        self.buttons.append(
+            components.ui.Button(
+                button_id=components.ui.ButtonID.ROLL.value,
+                center=components.Coords(100, SCREEN_HEIGHT - 100),
+                text="Roll!",
+                colour=colours.Category.LIBERTY.value,
+            )
+        )
 
     def on_draw(self):
         """Render the screen."""
         self.clear()
-        self.score_categories.draw()
+        self.zones.draw()
         self.dice.draw()
+        self.buttons.draw()
 
     def on_update(self, delta_time: float):
         super().on_update(delta_time)
         for die in self.dice:
             die.update_animation()
 
-    def on_mouse_press(self, x, y, button, modifiers):
+    def on_mouse_press(self, x: float, y: float, button, modifiers) -> None:
         """Called when the user presses a mouse button."""
-        categories = arcade.get_sprites_at_point((x, y), self.score_categories)
-        dice = arcade.get_sprites_at_point((x, y), self.dice)
+        clicked_items = (
+            arcade.get_sprites_at_point((x, y), self.dice)
+            + arcade.get_sprites_at_point((x, y), self.buttons)
+            + arcade.get_sprites_at_point((x, y), self.zones)
+        )
 
-        if len(categories) > 0:
-            categories[0].on_mouse_press(Coords(x, y))
+        if not clicked_items:
+            return
 
-        if len(dice) > 0:
-            dice[0].on_mouse_press()
+        clicked_item = clicked_items[0]
+
+        if isinstance(clicked_item, components.zones.Zone):
+            clicked_item.on_mouse_press(components.Coords(int(x), int(y)))
+
+        elif isinstance(clicked_item, components.Die):
+            clicked_item.on_mouse_press()
+
+        elif isinstance(clicked_item, components.ui.Button):
+            if (
+                clicked_item.identifier == components.ui.ButtonID.ROLL.value
+                and self.state == game_state.State.ROLLING
+            ):
+                for die in self.dice:
+                    if isinstance(die, components.Die):
+                        die.roll()
+                self.state = game_state.State.ROLLED

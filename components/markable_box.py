@@ -1,14 +1,19 @@
 """Markable box class"""
-from arcade import create_text_image, create_text_sprite, Sprite, Texture
-from abstracts.multi_sprite import MultiSprite
-from abstracts.coords import Coords
+import arcade
+import sprites
+
+from components import coords
 
 
-class MarkableBox(MultiSprite):
+class MarkableBox(sprites.MultiSprite):
     """Class for boxes that can be marked"""
 
     def __init__(
-        self, score_category: MultiSprite, center: Coords, text: str = "", prereq=None
+        self,
+        parent_zone,
+        center: coords.Coords,
+        text: str = "",
+        prereq=None,
     ):
         super().__init__(
             filename="images/mark_box.png",
@@ -20,7 +25,7 @@ class MarkableBox(MultiSprite):
 
         self.prereq = prereq
 
-        self.mark = Sprite(
+        self.mark = arcade.Sprite(
             filename="images/mark_box_mark.png",
             center_x=self.center_x,
             center_y=self.center_y,
@@ -28,7 +33,7 @@ class MarkableBox(MultiSprite):
         )
 
         self.text = text
-        self.text_sprite = create_text_sprite(
+        self.text_sprite = arcade.create_text_sprite(
             text,
             start_x=center.x_coord,
             start_y=center.y_coord,
@@ -36,7 +41,7 @@ class MarkableBox(MultiSprite):
             anchor_x="center",
             anchor_y="center",
         )
-        self.score_category = score_category
+        self.parent_zone = parent_zone
 
         self.sub_sprites.append(self.text_sprite)
 
@@ -48,12 +53,12 @@ class MarkableBox(MultiSprite):
         self.marked = True
         self.markable = False
         self.sub_sprites.append(self.mark)
-        self.score_category.update_markables()
+        self.parent_zone.update_markables()
         return True
 
     def set_prereq(self, box):
         """
-        Set the box requiered to be marked before this one can be marked.
+        Set the box required to be marked before this one can be marked.
 
         Args:
             box (MarkableBox)): Prerequisite box
@@ -63,9 +68,9 @@ class MarkableBox(MultiSprite):
     def update_text(self, new_text):
         """Update the text displayed in the box"""
         self.text = new_text
-        self.text_sprite.texture = Texture(
+        self.text_sprite.texture = arcade.Texture(
             name=new_text,
-            image=create_text_image(
+            image=arcade.create_text_image(
                 new_text,
                 text_color=(0, 0, 0),
             ),

@@ -3,7 +3,7 @@
 from enum import Enum
 
 
-class ScoreCategorySpriteFilepath(Enum):
+class ZoneSprite(Enum):
     """Provides filepaths to standard score category sprites"""
 
     SHORT = "images/short_area.png"
