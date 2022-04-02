@@ -31,9 +31,7 @@ class Zone(sprites.MultiSprite):
         label: str = "",
     ) -> markable_box.MarkableBox:
         """Add a new box to the score category, with x and y set relative to the box"""
-        box = markable_box.MarkableBox(
-            self, center=self.origin + offset, text=label
-        )
+        box = markable_box.MarkableBox(self, center=self.origin + offset, text=label)
 
         if len(self.boxes) == 0:
             box.markable = True

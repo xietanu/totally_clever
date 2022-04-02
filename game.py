@@ -26,17 +26,17 @@ class TotallyClever(arcade.Window):
         arcade.set_background_color((0, 30, 50))
         self.timer = 0
 
-        self.score_categories = sprites.MultiSpriteList(use_spatial_hash=True)
+        self.zones = sprites.MultiSpriteList(use_spatial_hash=True)
         self.dice = sprites.MultiSpriteList()
         self.buttons = sprites.MultiSpriteList(use_spatial_hash=True)
 
-        self.game_state = game_state.State.ROLLING
+        self.state = game_state.State.ROLLING
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         self.timer = 0
 
-        self.score_categories = sprites.MultiSpriteList(use_spatial_hash=True)
+        self.zones = sprites.MultiSpriteList(use_spatial_hash=True)
         self.dice = sprites.MultiSpriteList()
         self.buttons = sprites.MultiSpriteList(use_spatial_hash=True)
 
@@ -45,7 +45,7 @@ class TotallyClever(arcade.Window):
             colours.Category.SUNGLOW.value,
             components.Coords(300, 0),
         )
-        self.score_categories.append(at_least_category)
+        self.zones.append(at_least_category)
 
         at_least_category.add_decorative_sprite(
             "images/arrow_icon.png", components.Coords(30, 50), apply_color=True
@@ -83,14 +83,13 @@ class TotallyClever(arcade.Window):
                 center=components.Coords(100, SCREEN_HEIGHT - 100),
                 text="Roll!",
                 colour=colours.Category.LIBERTY.value,
-                clickable_game_state=game_state.State.ROLLING,
             )
         )
 
     def on_draw(self):
         """Render the screen."""
         self.clear()
-        self.score_categories.draw()
+        self.zones.draw()
         self.dice.draw()
         self.buttons.draw()
 
@@ -101,9 +100,11 @@ class TotallyClever(arcade.Window):
 
     def on_mouse_press(self, x: float, y: float, button, modifiers) -> None:
         """Called when the user presses a mouse button."""
-        combined_lists = self.score_categories + self.dice + self.buttons
-
-        clicked_items = arcade.get_sprites_at_point((x, y), combined_lists)
+        clicked_items = (
+            arcade.get_sprites_at_point((x, y), self.dice)
+            + arcade.get_sprites_at_point((x, y), self.buttons)
+            + arcade.get_sprites_at_point((x, y), self.zones)
+        )
 
         if not clicked_items:
             return
@@ -116,10 +117,12 @@ class TotallyClever(arcade.Window):
         elif isinstance(clicked_item, components.Die):
             clicked_item.on_mouse_press()
 
-        elif isinstance(
-            clicked_item, components.ui.Button
-        ) and clicked_item.is_clickable(self.game_state):
-            if clicked_item.get_id() == components.ui.ButtonID.ROLL.value:
+        elif isinstance(clicked_item, components.ui.Button):
+            if (
+                clicked_item.identifier == components.ui.ButtonID.ROLL.value
+                and self.state == game_state.State.ROLLING
+            ):
                 for die in self.dice:
                     if isinstance(die, components.Die):
                         die.roll()
+                self.state = game_state.State.ROLLED

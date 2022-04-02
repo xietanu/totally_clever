@@ -47,13 +47,17 @@ def test_die_height():
 
 def test_colour_sapphire():
     """Test the colour is set correctly to sky blue"""
-    die = components.Die(center=components.Coords(0, 0), colour=colours.Category.SKY.value)
+    die = components.Die(
+        center=components.Coords(0, 0), colour=colours.Category.SKY.value
+    )
 
     assert die.color == colours.Category.SKY.value
 
 
 def test_colour_flame():
     """Test the colour is set correctly to alabaster white"""
-    die = components.Die(center=components.Coords(0, 0), colour=colours.Category.ALABASTER.value)
+    die = components.Die(
+        center=components.Coords(0, 0), colour=colours.Category.ALABASTER.value
+    )
 
     assert die.color == colours.Category.ALABASTER.value
