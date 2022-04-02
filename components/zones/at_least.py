@@ -1,19 +1,20 @@
-"""Class for score category of ascending requirements"""
+"""Class for the score zone with minimum requirements"""
+from components.zones import zone
+from components import coords
+from components import markable_box
 
-from abstracts.coords import Coords
-from components.markable_box import MarkableBox
-from components.score_categories.score_category import ScoreCategory
 
+class AtLeast(zone.Zone):
+    """Score zone with minimum requirements"""
 
-class AtLeastCategory(ScoreCategory):
-    """Score category of ascending requirements"""
-
-    def add_box(self, offset: Coords, label: str = "") -> MarkableBox:
+    def add_box(
+        self, offset: coords.Coords, label: str = ""
+    ) -> markable_box.MarkableBox:
         """
-        Add a markable box to this score category.
+        Add a markable box to this zone.
 
         Args:
-            offset (Coords): Offset from the bottom left corner of the score score category.
+            offset (Coords): Offset from the bottom left corner of the zone.
             label (str, optional): Text label to draw on the markable box. Defaults to "".
 
         Returns:
@@ -38,6 +39,6 @@ class AtLeastCategory(ScoreCategory):
             [
                 1 if box.marked else 0
                 for box in self.boxes
-                if isinstance(box, MarkableBox)
+                if isinstance(box, markable_box.MarkableBox)
             ]
         )

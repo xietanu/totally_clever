@@ -1,4 +1,4 @@
-"""Class for storing 2D coords"""
+"""Classes and functions for handling components in spaces"""
 from dataclasses import dataclass
 
 

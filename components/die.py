@@ -1,12 +1,12 @@
 """Tests for the Die component class"""
 from dataclasses import dataclass
-from enum import Enum
+import enum
 import random
-from arcade import Sprite, load_spritesheet
+import arcade
 
-from visual_elements.colours import Colours
-from abstracts.coords import Coords
-from abstracts.multi_sprite import MultiSprite
+import colours
+import components
+import sprites
 
 
 @dataclass
@@ -17,7 +17,7 @@ class DieMode:
     highlighted: bool = False
 
 
-class DieModes(Enum):
+class DieModes(enum.Enum):
     """Enumates the possible dice states"""
 
     BASE = DieMode()
@@ -25,13 +25,13 @@ class DieModes(Enum):
     SELECTED = DieMode(highlighted=True)
 
 
-class Die(MultiSprite):
+class Die(sprites.MultiSprite):
     """Class for die component"""
 
     def __init__(
         self,
-        center: Coords,
-        colour: tuple[int, int, int] = Colours.SKY.value,
+        center: components.Coords,
+        colour: tuple[int, int, int] = colours.Category.SKY.value,
         **sprite_kwargs
     ):
 
@@ -49,7 +49,7 @@ class Die(MultiSprite):
 
         self.mode = DieModes.ROLLING
 
-        self.textures = load_spritesheet(
+        self.textures = arcade.load_spritesheet(
             "images/dice_sprite_sheet.png",
             sprite_width=64,
             sprite_height=64,
@@ -58,7 +58,7 @@ class Die(MultiSprite):
         )
         self.texture = self.textures[self.side]
 
-        self.selected_sprite = Sprite(
+        self.selected_sprite = arcade.Sprite(
             "images/dice_highlight.png", center_x=self.center_x, center_y=self.center_y
         )
 
@@ -72,12 +72,11 @@ class Die(MultiSprite):
                 new_side = random.randrange(5)
                 if new_side >= self.side:
                     new_side += 1
-                self.side = new_side
-                self.texture = self.textures[self.side]
+                self._set_side(new_side)
 
     def on_mouse_press(self):
         """Defines behaviour when clicked on"""
-        if self.mode in [DieModes.BASE, DieModes.ROLLING]:
+        if self.mode in [DieModes.BASE]:
             self.mode = DieModes.SELECTED
             self.sub_sprites.append(self.selected_sprite)
         elif self.mode == DieModes.SELECTED:
@@ -87,3 +86,21 @@ class Die(MultiSprite):
         """Reset whether the die is selected"""
         self.mode = DieModes.BASE
         self.selected_sprite.remove_from_sprite_lists()
+
+    def roll(self) -> None:
+        """
+        Randomise the side of the die
+        """
+        self._set_side(random.randrange(6))
+        self.mode = DieModes.BASE
+
+    def _set_side(self, value: int) -> None:
+        """
+        Set the side of the die to the specified value
+
+        Args:
+            value (int): value on the die
+        """
+
+        self.side = value - 1
+        self.texture = self.textures[self.side]
