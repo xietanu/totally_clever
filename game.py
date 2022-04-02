@@ -51,22 +51,10 @@ class TotallyClever(arcade.Window):
             "images/arrow_icon.png", components.Coords(30, 50), apply_color=True
         )
 
-        at_least_box_texts = [
-            ">0",
-            ">1",
-            ">2",
-            ">3",
-            ">4",
-            ">0",
-            ">1",
-            ">2",
-            ">3",
-            ">4",
-            ">5",
-        ]
-        for x_offset, text in enumerate(at_least_box_texts):
+        for x_offset, min_value in enumerate(list(range(1, 6)) + list(range(1, 7))):
             at_least_category.add_box(
-                components.Coords(70 + 40 * x_offset, 50), label=text
+                components.boxes.MinValueBox(min_value),
+                components.Coords(70 + 40 * x_offset, 50),
             )
 
         for y_offset_multiplier, colour in enumerate(colours.Category):
