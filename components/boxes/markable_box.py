@@ -37,7 +37,7 @@ class MarkableBox(sprites.MultiSprite):
             self._text_sprite.center_x = position.x_coord
             self._text_sprite.center_y = position.y_coord
 
-    def try_mark(self) -> bool:
+    def try_mark(self, value: int) -> bool:  ## pylint: disable=unused-argument
         """
         Try marking the box, returns whether successful
 

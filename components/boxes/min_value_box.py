@@ -30,7 +30,7 @@ class MinValueBox(markable_box.MarkableBox):
         if value < self.min_value or (self.prereq_box and not self.prereq_box.marked):
             return False
 
-        return super().try_mark()
+        return super().try_mark(value)
 
     def get_score(self) -> int:
         """

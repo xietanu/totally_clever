@@ -32,6 +32,8 @@ class TotallyClever(arcade.Window):
 
         self.state = game_state.State.ROLLING
 
+        self._selected_die = None
+
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         self.timer = 0
@@ -99,11 +101,23 @@ class TotallyClever(arcade.Window):
 
         clicked_item = clicked_items[0]
 
-        if isinstance(clicked_item, components.zones.Zone):
-            clicked_item.on_mouse_press(components.Coords(int(x), int(y)))
+        if (
+            isinstance(clicked_item, components.zones.Zone)
+            and self._selected_die
+            and clicked_item.color == self._selected_die.color
+        ):
+            clicked_item.on_mouse_press(
+                components.Coords(int(x), int(y)), value=self._selected_die.side
+            )
 
-        elif isinstance(clicked_item, components.Die):
-            clicked_item.on_mouse_press()
+        elif (
+            isinstance(clicked_item, components.Die)
+            and self.state == game_state.State.SELECTING_DIE
+        ):
+            if clicked_item.on_mouse_press():
+                self._selected_die = clicked_item
+            else:
+                self._selected_die = None
 
         elif isinstance(clicked_item, components.ui.Button):
             if (
@@ -113,4 +127,4 @@ class TotallyClever(arcade.Window):
                 for die in self.dice:
                     if isinstance(die, components.Die):
                         die.roll()
-                self.state = game_state.State.ROLLED
+                self.state = game_state.State.SELECTING_DIE

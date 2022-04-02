@@ -58,14 +58,14 @@ class Zone(sprites.MultiSprite):
 
         self.sub_sprites.append(new_sprite)
 
-    def on_mouse_press(self, pointer: coords.Coords):
+    def on_mouse_press(self, pointer: coords.Coords, value: int):
         """Manages click on the score_category"""
         boxes = arcade.get_sprites_at_point(
             (pointer.x_coord, pointer.y_coord), self.boxes
         )
 
         if len(boxes) > 0 and isinstance(boxes[0], markable_box.MarkableBox):
-            boxes[0].try_mark(4)
+            boxes[0].try_mark(value)
 
     def get_score(self) -> int:
         """
