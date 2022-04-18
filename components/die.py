@@ -74,13 +74,15 @@ class Die(sprites.MultiSprite):
                     new_side += 1
                 self._set_side(new_side)
 
-    def on_mouse_press(self):
+    def on_mouse_press(self) -> bool:
         """Defines behaviour when clicked on"""
         if self.mode in [DieModes.BASE]:
             self.mode = DieModes.SELECTED
             self.sub_sprites.append(self.selected_sprite)
-        elif self.mode == DieModes.SELECTED:
+            return True
+        if self.mode == DieModes.SELECTED:
             self.reset_selection()
+        return False
 
     def reset_selection(self):
         """Reset whether the die is selected"""
@@ -91,8 +93,14 @@ class Die(sprites.MultiSprite):
         """
         Randomise the side of the die
         """
-        self._set_side(random.randrange(6))
+        self._set_side(random.randrange(6) + 1)
         self.mode = DieModes.BASE
+
+    def start_rolling(self) -> None:
+        """
+        Start the rolling animation.
+        """
+        self.mode = DieModes.ROLLING
 
     def _set_side(self, value: int) -> None:
         """
@@ -102,5 +110,5 @@ class Die(sprites.MultiSprite):
             value (int): value on the die
         """
 
-        self.side = value - 1
-        self.texture = self.textures[self.side]
+        self.side = value
+        self.texture = self.textures[self.side - 1]

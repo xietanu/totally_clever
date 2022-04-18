@@ -1,6 +1,7 @@
 """Score zone classes for each category"""
 import arcade
-from components import coords, markable_box
+from components import coords
+from components.boxes import markable_box
 import sprites
 
 
@@ -27,19 +28,20 @@ class Zone(sprites.MultiSprite):
 
     def add_box(
         self,
+        box,
         offset: coords.Coords,
-        label: str = "",
-    ) -> markable_box.MarkableBox:
-        """Add a new box to the score category, with x and y set relative to the box"""
-        box = markable_box.MarkableBox(self, center=self.origin + offset, text=label)
+    ) -> None:
+        """
+        Add a markable box to this zone.
 
-        if len(self.boxes) == 0:
-            box.markable = True
+        Args:
+            box: (MarkableBox): Markable box to add
+            offset (Coords): Offset from the bottom left corner of the zone.
+        """
+        box.set_pos(self.origin + offset)
 
         self.boxes.append(box)
         self.sub_sprites.append(box)
-
-        return box
 
     def add_decorative_sprite(
         self, filename, offset: coords.Coords, *, apply_color: bool = False
@@ -56,20 +58,24 @@ class Zone(sprites.MultiSprite):
 
         self.sub_sprites.append(new_sprite)
 
-    def on_mouse_press(self, pointer: coords.Coords):
-        """Manages click on the score_category"""
+    def assign_die(self, pointer: coords.Coords, value: int) -> bool:
+        """
+        Attempt to assign a die a box in the zone.
+
+        Args:
+            pointer (coords.Coords): The position that was clicked.
+            value (int): The value of the die selected.
+
+        Returns:
+            bool: Whether the die was successfully assigned.
+        """
         boxes = arcade.get_sprites_at_point(
             (pointer.x_coord, pointer.y_coord), self.boxes
         )
 
         if len(boxes) > 0 and isinstance(boxes[0], markable_box.MarkableBox):
-            boxes[0].mark_box()
-
-    def update_markables(self) -> None:
-        """Update the markable status for all boxes"""
-        for markable in self.boxes:
-            if isinstance(markable, markable_box.MarkableBox):
-                markable.update_markable()
+            return boxes[0].try_mark(value)
+        return False
 
     def get_score(self) -> int:
         """
