@@ -58,14 +58,24 @@ class Zone(sprites.MultiSprite):
 
         self.sub_sprites.append(new_sprite)
 
-    def on_mouse_press(self, pointer: coords.Coords, value: int):
-        """Manages click on the score_category"""
+    def assign_die(self, pointer: coords.Coords, value: int) -> bool:
+        """
+        Attempt to assign a die a box in the zone.
+
+        Args:
+            pointer (coords.Coords): The position that was clicked.
+            value (int): The value of the die selected.
+
+        Returns:
+            bool: Whether the die was successfully assigned.
+        """
         boxes = arcade.get_sprites_at_point(
             (pointer.x_coord, pointer.y_coord), self.boxes
         )
 
         if len(boxes) > 0 and isinstance(boxes[0], markable_box.MarkableBox):
-            boxes[0].try_mark(value)
+            return boxes[0].try_mark(value)
+        return False
 
     def get_score(self) -> int:
         """

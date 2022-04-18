@@ -96,6 +96,12 @@ class Die(sprites.MultiSprite):
         self._set_side(random.randrange(6) + 1)
         self.mode = DieModes.BASE
 
+    def start_rolling(self) -> None:
+        """
+        Start the rolling animation.
+        """
+        self.mode = DieModes.ROLLING
+
     def _set_side(self, value: int) -> None:
         """
         Set the side of the die to the specified value

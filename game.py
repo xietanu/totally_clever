@@ -5,8 +5,8 @@ import arcade
 
 import colours
 import components
-import game_state
 import sprites
+import states
 
 # Constants
 SCREEN_WIDTH = 800
@@ -30,7 +30,7 @@ class TotallyClever(arcade.Window):
         self.dice = sprites.MultiSpriteList()
         self.buttons = sprites.MultiSpriteList(use_spatial_hash=True)
 
-        self.state = game_state.State.ROLLING
+        self.state = states.RollingGameState(self)
 
         self._selected_die = None
 
@@ -105,14 +105,17 @@ class TotallyClever(arcade.Window):
             isinstance(clicked_item, components.zones.Zone)
             and self._selected_die
             and clicked_item.color == self._selected_die.color
+            and isinstance(self.state, states.SelectingDieGameState)
         ):
-            clicked_item.on_mouse_press(
+            successful_assignment = clicked_item.assign_die(
                 components.Coords(int(x), int(y)), value=self._selected_die.side
             )
 
-        elif (
-            isinstance(clicked_item, components.Die)
-            and self.state == game_state.State.SELECTING_DIE
+            if successful_assignment:
+                self._change_state(states.RollingGameState)
+
+        elif isinstance(clicked_item, components.Die) and isinstance(
+            self.state, states.SelectingDieGameState
         ):
             if clicked_item.on_mouse_press():
                 self._selected_die = clicked_item
@@ -122,9 +125,17 @@ class TotallyClever(arcade.Window):
         elif isinstance(clicked_item, components.ui.Button):
             if (
                 clicked_item.identifier == components.ui.ButtonID.ROLL.value
-                and self.state == game_state.State.ROLLING
+                and isinstance(self.state, states.RollingGameState)
             ):
-                for die in self.dice:
-                    if isinstance(die, components.Die):
-                        die.roll()
-                self.state = game_state.State.SELECTING_DIE
+                self._change_state(states.SelectingDieGameState)
+
+    def reset_die_selection(self):
+        """Deselect the current die"""
+        if self._selected_die:
+            self._selected_die.reset_selection()
+            self._selected_die = None
+
+    def _change_state(self, new_state: type[states.GameState]) -> None:
+        self.state.end()
+        self.state = new_state(self)
+        self.state.start()
