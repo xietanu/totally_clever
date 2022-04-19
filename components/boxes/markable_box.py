@@ -24,6 +24,8 @@ class MarkableBox(sprites.MultiSprite):
         self._text = ""
         self._text_sprite = None
 
+        self.label_colour = (0,0,0)
+
     def set_pos(self, position: coords.Coords) -> None:
         """
         Set the position of the markable box
@@ -79,7 +81,7 @@ class MarkableBox(sprites.MultiSprite):
             start_x=self.center_x,
             start_y=self.center_y,
             bold=True,
-            color=(0, 0, 0),
+            color=self.label_colour,
             anchor_x="center",
             anchor_y="center",
         )
