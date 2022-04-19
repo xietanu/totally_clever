@@ -17,7 +17,7 @@ class GreaterThanPrereqBox(markable_box.MarkableBox):
         super().__init__()
         self.prereq_box = prereq_box
         self.marked_value = 0
-        self._text_sprite = None
+        self.mark_sprite = None
 
     def try_mark(self, value: int) -> bool:
         """
@@ -30,11 +30,15 @@ class GreaterThanPrereqBox(markable_box.MarkableBox):
             bool: Whether box has been marked
         """
         if self.prereq_box and (
-            not self.prereq_box.marked or self.prereq_box.marked_value >= value
+            not self.prereq_box.marked
+            or (
+                self.prereq_box.marked_value >= value
+                and self.prereq_box.marked_value < 6
+            )
         ):
             return False
 
-        self._text_sprite = arcade.create_text_sprite(
+        self.mark_sprite = arcade.create_text_sprite(
             text=str(value),
             start_x=self.center_x,
             start_y=self.center_y,
@@ -42,7 +46,10 @@ class GreaterThanPrereqBox(markable_box.MarkableBox):
             color=colours.Contrast.RUBY.value,
             anchor_x="center",
             anchor_y="center",
+            font_size=18,
         )
+
+        self.marked_value = value
 
         return super().try_mark(value)
 

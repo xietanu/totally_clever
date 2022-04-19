@@ -42,19 +42,19 @@ class TotallyClever(arcade.Window):
         self.dice = sprites.MultiSpriteList()
         self.buttons = sprites.MultiSpriteList(use_spatial_hash=True)
 
-        at_least_category = components.zones.AtLeast(
+        at_least_zone = components.zones.AtLeastZone(
             sprites.filepaths.ZoneSprite.SHORT.value,
             colours.Category.SUNGLOW.value,
             components.Coords(300, 0),
         )
-        self.zones.append(at_least_category)
+        self.zones.append(at_least_zone)
 
-        at_least_category.add_decorative_sprite(
+        at_least_zone.add_decorative_sprite(
             "images/arrow_icon.png", components.Coords(30, 50), apply_color=True
         )
 
         for x_offset, min_value in enumerate(list(range(1, 6)) + list(range(1, 7))):
-            at_least_category.add_box(
+            at_least_zone.add_box(
                 components.boxes.MinValueBox(min_value),
                 components.Coords(70 + 40 * x_offset, 50),
             )
@@ -65,6 +65,23 @@ class TotallyClever(arcade.Window):
                     components.Coords(64, 64 + 64 * y_offset_multiplier),
                     colour=colour.value,
                 )
+            )
+
+        greater_than_last_zone = components.zones.GreaterThanLastZone(
+            sprites.filepaths.ZoneSprite.SHORT.value,
+            colours.Category.SKY.value,
+            components.Coords(300, 300),
+        )
+        self.zones.append(greater_than_last_zone)
+
+        greater_than_last_zone.add_decorative_sprite(
+            "images/arrow_icon.png", components.Coords(30, 50), apply_color=True
+        )
+
+        for x_offset in range(11):
+            greater_than_last_zone.add_box(
+                components.boxes.GreaterThanPrereqBox(),
+                components.Coords(70 + 40 * x_offset, 50),
             )
 
         self.buttons.append(
@@ -117,6 +134,9 @@ class TotallyClever(arcade.Window):
         elif isinstance(clicked_item, components.Die) and isinstance(
             self.state, states.SelectingDieGameState
         ):
+            for die in self.dice:
+                if isinstance(die, components.Die) and die is not clicked_item:
+                    die.reset_selection()
             if clicked_item.on_mouse_press():
                 self._selected_die = clicked_item
             else:
