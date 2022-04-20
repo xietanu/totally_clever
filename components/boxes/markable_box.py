@@ -1,4 +1,5 @@
 """Markable box class"""
+from typing import Optional
 import arcade
 from components import coords
 import sprites
@@ -7,7 +8,7 @@ import sprites
 class MarkableBox(sprites.MultiSprite):
     """Class for boxes that can be marked"""
 
-    def __init__(self):
+    def __init__(self, prereq_box: Optional["MarkableBox"] = None):
         super().__init__(
             filename="images/mark_box.png",
         )
@@ -25,6 +26,8 @@ class MarkableBox(sprites.MultiSprite):
         self._text_sprite = None
 
         self.label_colour = (0, 0, 0)
+        
+        self.prereq_box = prereq_box
 
     def set_pos(self, position: coords.Coords) -> None:
         """

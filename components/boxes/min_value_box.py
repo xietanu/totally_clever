@@ -12,10 +12,9 @@ class MinValueBox(markable_box.MarkableBox):
         min_value: int = 0,
         prereq_box: Optional[markable_box.MarkableBox] = None,
     ):
-        super().__init__()
+        super().__init__(prereq_box)
         self.min_value = min_value
         self.label = f"\u2265{min_value}"
-        self.prereq_box = prereq_box
 
     def try_mark(self, value: int) -> bool:
         """

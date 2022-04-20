@@ -15,8 +15,7 @@ class MultiplierBox(markable_box.MarkableBox):
         multiplier: int = 1,
         prereq_box: Optional[markable_box.MarkableBox] = None,
     ):
-        super().__init__()
-        self.prereq_box = prereq_box
+        super().__init__(prereq_box)
         self.marked_value = 0
         self.mark_sprite = None
         self.multiplier = multiplier

@@ -14,8 +14,7 @@ class GreaterThanPrereqBox(markable_box.MarkableBox):
         self,
         prereq_box: Optional["GreaterThanPrereqBox"] = None,
     ):
-        super().__init__()
-        self.prereq_box = prereq_box
+        super().__init__(prereq_box)
         self.marked_value = 0
         self.mark_sprite = None
 
@@ -29,7 +28,7 @@ class GreaterThanPrereqBox(markable_box.MarkableBox):
         Returns:
             bool: Whether box has been marked
         """
-        if self.prereq_box and (
+        if isinstance(self.prereq_box,GreaterThanPrereqBox) and (
             not self.prereq_box.marked
             or (
                 self.prereq_box.marked_value >= value
