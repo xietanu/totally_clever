@@ -67,7 +67,7 @@ class TotallyClever(arcade.Window):
                 )
             )
 
-        greater_than_last_zone = components.zones.GreaterThanLastZone(
+        greater_than_last_zone = components.zones.InOrderSumZone(
             sprites.filepaths.ZoneSprite.SHORT.value,
             colours.Category.SKY.value,
             components.Coords(300, 300),
@@ -81,6 +81,23 @@ class TotallyClever(arcade.Window):
         for x_offset in range(11):
             greater_than_last_zone.add_box(
                 components.boxes.GreaterThanPrereqBox(),
+                components.Coords(70 + 40 * x_offset, 50),
+            )
+
+        multiplier_zone = components.zones.InOrderSumZone(
+            sprites.filepaths.ZoneSprite.SHORT.value,
+            colours.Category.ALABASTER.value,
+            components.Coords(300, 150),
+        )
+        self.zones.append(multiplier_zone)
+
+        multiplier_zone.add_decorative_sprite(
+            "images/arrow_icon.png", components.Coords(30, 50), apply_color=True
+        )
+
+        for x_offset, multiplier in enumerate([1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 3]):
+            multiplier_zone.add_box(
+                components.boxes.MultiplierBox(multiplier),
                 components.Coords(70 + 40 * x_offset, 50),
             )
 

@@ -1,15 +1,13 @@
 """Class for the score zone where dice need to increase."""
 from components.zones import zone
 from components import coords
-from components.boxes import markable_box, greater_than_prereq_box
+from components.boxes import markable_box
 
 
-class GreaterThanLastZone(zone.Zone):
-    """Score zone with increasing values."""
+class InOrderSumZone(zone.Zone):
+    """Zone where the boxes are filled in in order and the score is equal to their sum"""
 
-    def add_box(
-        self, box: greater_than_prereq_box.GreaterThanPrereqBox, offset: coords.Coords
-    ) -> None:
+    def add_box(self, box: markable_box.MarkableBox, offset: coords.Coords) -> None:
         """
         Add a markable box to this zone.
 
@@ -19,7 +17,7 @@ class GreaterThanLastZone(zone.Zone):
         """
         if self.boxes:
             last_box = self.boxes[-1]
-            if isinstance(last_box, greater_than_prereq_box.GreaterThanPrereqBox):
+            if isinstance(last_box, markable_box.MarkableBox):
                 box.prereq_box = last_box
 
         super().add_box(box, offset)

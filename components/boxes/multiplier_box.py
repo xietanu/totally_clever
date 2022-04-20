@@ -1,4 +1,4 @@
-"""GreaterThanPrereqBox class"""
+"""MultiplierBox class"""
 from typing import Optional
 
 from components import coords
@@ -6,16 +6,20 @@ from components import coords
 from components.boxes import create_text_mark_sprite, markable_box
 
 
-class GreaterThanPrereqBox(markable_box.MarkableBox):
-    """Markable box where the value must be greater than the previous box"""
+class MultiplierBox(markable_box.MarkableBox):
+    """Box class scored based the value assigned to it. Can apply a multiplier"""
 
     def __init__(
         self,
-        prereq_box: Optional["GreaterThanPrereqBox"] = None,
+        multiplier: int = 1,
+        prereq_box: Optional[markable_box.MarkableBox] = None,
     ):
         super().__init__(prereq_box)
         self.marked_value = 0
         self.mark_sprite = None
+        self.multiplier = multiplier
+        if multiplier > 1:
+            self.label = f"x{multiplier}"
 
     def try_mark(self, value: int) -> bool:
         """
@@ -27,21 +31,16 @@ class GreaterThanPrereqBox(markable_box.MarkableBox):
         Returns:
             bool: Whether box has been marked
         """
-        if isinstance(self.prereq_box, GreaterThanPrereqBox) and (
-            not self.prereq_box.marked
-            or (
-                self.prereq_box.marked_value >= value
-                and self.prereq_box.marked_value < 6
-            )
-        ):
+        if self.prereq_box and not self.prereq_box.marked:
             return False
 
+        self.label = ""
+
+        self.marked_value = value * self.multiplier
+
         self.mark_sprite = create_text_mark_sprite.create_text_mark_sprite(
-            value, coords.Coords(self.center_x, self.center_y)
+            self.marked_value, coords.Coords(self.center_x, self.center_y)
         )
-
-        self.marked_value = value
-
         return super().try_mark(value)
 
     def get_score(self) -> int:
