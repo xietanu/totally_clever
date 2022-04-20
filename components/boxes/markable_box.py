@@ -24,6 +24,8 @@ class MarkableBox(sprites.MultiSprite):
         self._text = ""
         self._text_sprite = None
 
+        self.label_colour = (0, 0, 0)
+
     def set_pos(self, position: coords.Coords) -> None:
         """
         Set the position of the markable box
@@ -31,8 +33,11 @@ class MarkableBox(sprites.MultiSprite):
         Args:
             position (coords.Coords): New coordinates of the box
         """
-        self.center_x = self.mark_sprite.center_x = position.x_coord
-        self.center_y = self.mark_sprite.center_y = position.y_coord
+        self.center_x = position.x_coord
+        self.center_y = position.y_coord
+        if self.mark_sprite:
+            self.mark_sprite.center_x = position.x_coord
+            self.mark_sprite.center_y = position.y_coord
         if self._text_sprite:
             self._text_sprite.center_x = position.x_coord
             self._text_sprite.center_y = position.y_coord
@@ -79,8 +84,17 @@ class MarkableBox(sprites.MultiSprite):
             start_x=self.center_x,
             start_y=self.center_y,
             bold=True,
-            color=(0, 0, 0),
+            color=self.label_colour,
             anchor_x="center",
             anchor_y="center",
         )
         self.sub_sprites.append(self._text_sprite)
+
+    def get_score(self) -> int:
+        """
+        Get the score associated with this box.
+
+        Returns:
+            int: score from box. 0 if not marked.
+        """
+        return 1 if self.marked else 0
