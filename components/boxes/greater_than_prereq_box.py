@@ -1,4 +1,4 @@
-"""MinValueBox class"""
+"""GreaterThanPrereqBox class"""
 from typing import Optional
 
 import arcade
@@ -8,7 +8,7 @@ import colours
 
 
 class GreaterThanPrereqBox(markable_box.MarkableBox):
-    """Markable box where a minimum value must be met"""
+    """Markable box where the value must be greater than the previous box"""
 
     def __init__(
         self,
