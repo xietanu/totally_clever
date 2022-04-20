@@ -83,7 +83,7 @@ class TotallyClever(arcade.Window):
                 components.boxes.GreaterThanPrereqBox(),
                 components.Coords(70 + 40 * x_offset, 50),
             )
-        
+
         multiplier_zone = components.zones.InOrderSumZone(
             sprites.filepaths.ZoneSprite.SHORT.value,
             colours.Category.ALABASTER.value,
@@ -95,7 +95,7 @@ class TotallyClever(arcade.Window):
             "images/arrow_icon.png", components.Coords(30, 50), apply_color=True
         )
 
-        for x_offset, multiplier in enumerate([1,1,1,2,1,1,2,1,2,1,3]):
+        for x_offset, multiplier in enumerate([1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 3]):
             multiplier_zone.add_box(
                 components.boxes.MultiplierBox(multiplier),
                 components.Coords(70 + 40 * x_offset, 50),

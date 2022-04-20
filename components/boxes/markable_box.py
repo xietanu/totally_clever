@@ -9,9 +9,7 @@ class MarkableBox(sprites.MultiSprite):
     """Class for boxes that can be marked"""
 
     def __init__(self, prereq_box: Optional["MarkableBox"] = None):
-        super().__init__(
-            filename="images/mark_box.png",
-        )
+        super().__init__(filename="images/mark_box.png", center_x=0, center_y=0)
         self.marked = False
 
         self.mark_sprite = arcade.Sprite(
@@ -19,14 +17,9 @@ class MarkableBox(sprites.MultiSprite):
             hit_box_algorithm="None",
         )
 
-        self.center_x = 0
-        self.center_y = 0
-
         self._text = ""
         self._text_sprite = None
 
-        self.label_colour = (0, 0, 0)
-        
         self.prereq_box = prereq_box
 
     def set_pos(self, position: coords.Coords) -> None:
@@ -87,7 +80,7 @@ class MarkableBox(sprites.MultiSprite):
             start_x=self.center_x,
             start_y=self.center_y,
             bold=True,
-            color=self.label_colour,
+            color=(0, 0, 0),
             anchor_x="center",
             anchor_y="center",
         )

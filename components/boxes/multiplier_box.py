@@ -1,10 +1,9 @@
 """MultiplierBox class"""
 from typing import Optional
 
-import arcade
+from components import coords
 
-from components.boxes import markable_box
-import colours
+from components.boxes import create_text_mark_sprite, markable_box
 
 
 class MultiplierBox(markable_box.MarkableBox):
@@ -39,17 +38,9 @@ class MultiplierBox(markable_box.MarkableBox):
 
         self.marked_value = value * self.multiplier
 
-        self.mark_sprite = arcade.create_text_sprite(
-            text=str(self.marked_value),
-            start_x=self.center_x,
-            start_y=self.center_y,
-            bold=True,
-            color=colours.Contrast.RUBY.value,
-            anchor_x="center",
-            anchor_y="center",
-            font_size=18,
+        self.mark_sprite = create_text_mark_sprite.create_text_mark_sprite(
+            self.marked_value, coords.Coords(self.center_x, self.center_y)
         )
-
         return super().try_mark(value)
 
     def get_score(self) -> int:

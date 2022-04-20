@@ -7,9 +7,7 @@ from components.boxes import markable_box
 class InOrderSumZone(zone.Zone):
     """Zone where the boxes are filled in in order and the score is equal to their sum"""
 
-    def add_box(
-        self, box: markable_box.MarkableBox, offset: coords.Coords
-    ) -> None:
+    def add_box(self, box: markable_box.MarkableBox, offset: coords.Coords) -> None:
         """
         Add a markable box to this zone.
 

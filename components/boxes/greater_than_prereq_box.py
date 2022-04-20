@@ -1,10 +1,9 @@
 """GreaterThanPrereqBox class"""
 from typing import Optional
 
-import arcade
+from components import coords
 
-from components.boxes import markable_box
-import colours
+from components.boxes import create_text_mark_sprite, markable_box
 
 
 class GreaterThanPrereqBox(markable_box.MarkableBox):
@@ -28,7 +27,7 @@ class GreaterThanPrereqBox(markable_box.MarkableBox):
         Returns:
             bool: Whether box has been marked
         """
-        if isinstance(self.prereq_box,GreaterThanPrereqBox) and (
+        if isinstance(self.prereq_box, GreaterThanPrereqBox) and (
             not self.prereq_box.marked
             or (
                 self.prereq_box.marked_value >= value
@@ -37,15 +36,8 @@ class GreaterThanPrereqBox(markable_box.MarkableBox):
         ):
             return False
 
-        self.mark_sprite = arcade.create_text_sprite(
-            text=str(value),
-            start_x=self.center_x,
-            start_y=self.center_y,
-            bold=True,
-            color=colours.Contrast.RUBY.value,
-            anchor_x="center",
-            anchor_y="center",
-            font_size=18,
+        self.mark_sprite = create_text_mark_sprite.create_text_mark_sprite(
+            value, coords.Coords(self.center_x, self.center_y)
         )
 
         self.marked_value = value
