@@ -1,9 +1,10 @@
 """MultiplierBox class"""
 from typing import Optional
 
-from components import coords
+from components import coords, die
 
 from components.boxes import create_text_mark_sprite, markable_box
+from components.zones import zone
 
 
 class MultiplierBox(markable_box.MarkableBox):
@@ -11,17 +12,17 @@ class MultiplierBox(markable_box.MarkableBox):
 
     def __init__(
         self,
-        multiplier: int = 1,
+        parent_zone: "zone.Zone",
+        center: coords.Coords,
         prereq_box: Optional[markable_box.MarkableBox] = None,
+        multiplier: int = 1,
+        text: str = "",
     ):
-        super().__init__(prereq_box)
+        super().__init__(parent_zone, center, prereq_box, f"x{multiplier}" if multiplier > 1 else "")
         self.marked_value = 0
-        self.mark_sprite = None
         self.multiplier = multiplier
-        if multiplier > 1:
-            self.label = f"x{multiplier}"
 
-    def try_mark(self, value: int) -> bool:
+    def try_mark(self, selected_die: die.Die) -> bool:
         """
         Try marking the box, returns whether successful
 
@@ -31,17 +32,19 @@ class MultiplierBox(markable_box.MarkableBox):
         Returns:
             bool: Whether box has been marked
         """
-        if self.prereq_box and not self.prereq_box.marked:
+        if self.prereq_box and not self.prereq_box.marked and not super().try_mark(selected_die):
             return False
+        
+        value = selected_die.side
 
-        self.label = ""
+        self.set_text("")
 
         self.marked_value = value * self.multiplier
 
         self.mark_sprite = create_text_mark_sprite.create_text_mark_sprite(
             self.marked_value, coords.Coords(self.center_x, self.center_y)
         )
-        return super().try_mark(value)
+        return True
 
     def get_score(self) -> int:
         """

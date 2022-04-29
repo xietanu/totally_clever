@@ -1,11 +1,12 @@
 """Button class"""
 import arcade
-import sprites
-from components import coords
+import colours
+from components import clickable, coords
 from components.ui import button_ids
+import scenes
+import game
 
-
-class Button(sprites.MultiSprite):
+class Button(clickable.Clickable):
     """Class for clickable button to trigger behaviour"""
 
     def __init__(
@@ -15,7 +16,7 @@ class Button(sprites.MultiSprite):
         text: str,
         colour: tuple[int, int, int],
     ):
-        super().__init__(
+        self.sprite = arcade.Sprite(
             filename="images/basic_button.png",
             center_x=center.x_coord,
             center_y=center.y_coord,
@@ -31,12 +32,14 @@ class Button(sprites.MultiSprite):
             start_y=center.y_coord,
             font_size=32,
             bold=True,
-            color=(255, 255, 255),
+            color=colours.Contrast.WHITE.value,
             anchor_x="center",
             anchor_y="center",
         )
 
-        self.sub_sprites.append(self._text_sprite)
+        game.TotallyClever().add_sprites_to_layer(
+            [self.sprite, self._text_sprite], scenes.MainGameLayers.UI
+        )
 
     def matches(self, id_to_check: button_ids.ButtonID) -> bool:
         """
@@ -49,38 +52,3 @@ class Button(sprites.MultiSprite):
             bool: Whether it is a match
         """
         return self.identifier == id_to_check.value
-
-    @property
-    def label(self) -> str:
-        """
-        Get the text written on the button
-
-        Returns:
-            str: Button's text
-        """
-        return self._text
-
-    @label.setter
-    def set_label(self, text: str):
-        """
-        Sets the text written on the button.
-
-        Args:
-            text (str): Nex text for the button
-        """
-        self._text = text
-
-        self._text_sprite.remove_from_sprite_lists()
-
-        self._text_sprite = arcade.create_text_sprite(
-            text,
-            start_x=self.center_x,
-            start_y=self.center_y,
-            font_size=32,
-            bold=True,
-            color=(255, 255, 255),
-            anchor_x="center",
-            anchor_y="center",
-        )
-
-        self.sub_sprites.append(self._text_sprite)

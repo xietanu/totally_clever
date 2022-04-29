@@ -1,11 +1,11 @@
 """Score zone classes for each category"""
+from typing import Optional
 import arcade
-from components import coords
-from components.boxes import markable_box
-import sprites
+from components import coords, boxes
+import scenes
+import game
 
-
-class Zone(sprites.MultiSprite):
+class Zone():
     """A general class for the scoring categories for specific colours to build on top of"""
 
     def __init__(
@@ -13,40 +13,74 @@ class Zone(sprites.MultiSprite):
         filename: str,
         colour: tuple[int, int, int],
         origin: coords.Coords,
-        **MultiSpriteArgs
     ):
-        super().__init__(filename=filename, **MultiSpriteArgs)
-        self.origin = origin
-        self.center_x = origin.x_coord + int(self.texture.size[0] / 2)
-        self.center_y = origin.y_coord + int(self.texture.size[1] / 2)
+        self.sprite = arcade.Sprite(filename=filename)
+        if isinstance(self.sprite.texture, arcade.Texture):
+            self.sprite.center_x = origin.x_coord + int(self.sprite.texture.size[0] / 2)
+            self.sprite.center_y = origin.y_coord + int(self.sprite.texture.size[1] / 2)
 
-        self.boxes = arcade.SpriteList(use_spatial_hash=True)
+        self.origin = origin
+
+        self.boxes = []
 
         self.color = colour
 
-        self.score_trackers = None
-
     def add_box(
         self,
-        box,
+        box_class: type,
         offset: coords.Coords,
-    ) -> None:
+        prereq_box: Optional[boxes.MarkableBox] = None,
+        text: str = "",
+        **subclass_kwargs,
+    ) -> boxes.MarkableBox:
         """
-        Add a markable box to this zone.
+        Add a new markable box to this zone.
 
         Args:
-            box: (MarkableBox): Markable box to add
-            offset (Coords): Offset from the bottom left corner of the zone.
-        """
-        box.set_pos(self.origin + offset)
+            box_class (type): Subclass of MarkableBox to use to create the box.
+            offset (coords.Coords): Offset of the center of the box from
+                the bottom left of the zone.
+            prereq_box (Optional[boxes.MarkableBox], optional): Pre-requisite box to be marked
+                before this one can be marked. Defaults to None.
+            text (str, optional): Text to put in the box. Defaults to "".
+            **subclass_kwargs: Any additional keyword arguments for the box subclass.
 
-        self.boxes.append(box)
-        self.sub_sprites.append(box)
+        Raises:
+            ValueError: Raised if the box_class is not a subclass of MarkableBox.
+
+        Returns:
+            boxes.MarkableBox: The newly created box instance.
+        """
+        if not issubclass(box_class, boxes.MarkableBox):
+            raise ValueError(
+                f"Received class {boxes.MarkableBox} to add a box, should be a MarkableBox."
+            )
+
+        new_box = box_class(
+            self,
+            center=self.origin + offset,
+            prereq_box=prereq_box,
+            text=text,
+            **subclass_kwargs,
+        )
+
+        self.boxes.append(new_box)
+
+        return new_box
 
     def add_decorative_sprite(
-        self, filename, offset: coords.Coords, *, apply_color: bool = False
-    ):
-        """Add a decorative sprite to the ScoreCategory."""
+        self, filename:str, offset: coords.Coords, *, apply_color: bool = False
+    ) -> None:
+        """
+        Add a decorative sprite to the zone.
+
+        Args:
+            filename (str): The filename and path for the image for the sprite.
+            offset (coords.Coords): Center of the sprite, measured from the
+                bottom left of the zone.
+            apply_color (bool, optional): Whether to colourize the sprite in line with the zone.
+                Defaults to False.
+        """
         position = self.origin + offset
 
         new_sprite = arcade.Sprite(
@@ -56,26 +90,7 @@ class Zone(sprites.MultiSprite):
         if apply_color:
             new_sprite.color = self.color
 
-        self.sub_sprites.append(new_sprite)
-
-    def assign_die(self, pointer: coords.Coords, value: int) -> bool:
-        """
-        Attempt to assign a die a box in the zone.
-
-        Args:
-            pointer (coords.Coords): The position that was clicked.
-            value (int): The value of the die selected.
-
-        Returns:
-            bool: Whether the die was successfully assigned.
-        """
-        boxes = arcade.get_sprites_at_point(
-            (pointer.x_coord, pointer.y_coord), self.boxes
-        )
-
-        if len(boxes) > 0 and isinstance(boxes[0], markable_box.MarkableBox):
-            return boxes[0].try_mark(value)
-        return False
+        game.TotallyClever().add_sprites_to_layer(new_sprite, scenes.MainGameLayers.PAPER_BASE)
 
     def get_score(self) -> int:
         """

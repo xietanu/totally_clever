@@ -1,22 +1,25 @@
 """MinValueBox class"""
 from typing import Optional
+from components import coords, die
 
 from components.boxes import markable_box
-
+from components.zones import zone
 
 class MinValueBox(markable_box.MarkableBox):
     """Markable box where a minimum value must be met"""
 
     def __init__(
         self,
-        min_value: int = 0,
+        parent_zone: "zone.Zone",
+        center: coords.Coords,
         prereq_box: Optional[markable_box.MarkableBox] = None,
+        min_value: int = 0,
+        text: str = "",
     ):
-        super().__init__(prereq_box)
+        super().__init__(parent_zone, center, prereq_box, f"\u2265{min_value}")
         self.min_value = min_value
-        self.label = f"\u2265{min_value}"
 
-    def try_mark(self, value: int) -> bool:
+    def try_mark(self, selected_die: die.Die) -> bool:
         """
         Try marking the box, returns whether successful
 
@@ -26,10 +29,12 @@ class MinValueBox(markable_box.MarkableBox):
         Returns:
             bool: Whether box has been marked
         """
+        value = selected_die.side
+        
         if value < self.min_value or (self.prereq_box and not self.prereq_box.marked):
             return False
 
-        return super().try_mark(value)
+        return super().try_mark(selected_die)
 
     def get_score(self) -> int:
         """

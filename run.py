@@ -1,15 +1,14 @@
 """
 The entry point for the application to be run from the command line.
 """
-from arcade import run
-from game import TotallyClever
-
+import arcade
+import game
 
 def main():
     """Main function"""
-    window = TotallyClever()
-    window.setup()
-    run()
+    game_instance = game.TotallyClever()
+    game_instance.setup()
+    arcade.run()
 
 
 if __name__ == "__main__":

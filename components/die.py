@@ -5,7 +5,9 @@ import random
 import arcade
 
 import colours
-import components
+from components import clickable, coords
+import game
+import scenes
 import sprites
 
 
@@ -25,17 +27,18 @@ class DieModes(enum.Enum):
     SELECTED = DieMode(highlighted=True)
 
 
-class Die(sprites.MultiSprite):
+class Die(clickable.Clickable):
     """Class for die component"""
 
     def __init__(
         self,
-        center: components.Coords,
+        center: coords.Coords,
         colour: tuple[int, int, int] = colours.Category.SKY.value,
         **sprite_kwargs
     ):
 
-        super().__init__(
+        self.sprite = arcade.Sprite(
+            filename=sprites.filepaths.DiceSpriteList.DIE.value,
             image_width=64,
             image_height=64,
             center_x=center.x_coord,
@@ -43,28 +46,35 @@ class Die(sprites.MultiSprite):
             **sprite_kwargs
         )
 
-        self.color = colour
-        self.side = 0
+        self.selected_sprite = arcade.Sprite(
+            filename=sprites.filepaths.DiceSpriteList.HIGHLIGHT.value,
+            center_x=self.sprite.center_x,
+            center_y=self.sprite.center_y,
+        )
+        self.selected_sprite.visible = False
+
+        game.TotallyClever().add_sprites_to_layer(
+            [self.sprite, self.selected_sprite], scenes.MainGameLayers.DICE
+        )
+
+        self.colour = colour
+        self.sprite.color = colour
+        self.side = 1
         self.timer = 0
 
         self.mode = DieModes.ROLLING
 
-        self.textures = arcade.load_spritesheet(
+        self.sprite.textures = arcade.load_spritesheet(
             "images/dice_sprite_sheet.png",
             sprite_width=64,
             sprite_height=64,
             columns=6,
             count=6,
         )
-        self.texture = self.textures[self.side]
-
-        self.selected_sprite = arcade.Sprite(
-            "images/dice_highlight.png", center_x=self.center_x, center_y=self.center_y
-        )
+        self.texture = self.sprite.textures[self.side - 1]
 
     def update_animation(self, delta_time: float = 1 / 60):
         """Updates the dice's visuals while rolling"""
-        super().update_animation(delta_time)
         if self.mode == DieModes.ROLLING:
             self.timer += delta_time
             if self.timer > 0.15:
@@ -78,7 +88,7 @@ class Die(sprites.MultiSprite):
         """Defines behaviour when clicked on"""
         if self.mode in [DieModes.BASE]:
             self.mode = DieModes.SELECTED
-            self.sub_sprites.append(self.selected_sprite)
+            self.selected_sprite.visible = True
             return True
         if self.mode == DieModes.SELECTED:
             self.reset_selection()
@@ -87,7 +97,7 @@ class Die(sprites.MultiSprite):
     def reset_selection(self):
         """Reset whether the die is selected"""
         self.mode = DieModes.BASE
-        self.selected_sprite.remove_from_sprite_lists()
+        self.selected_sprite.visible = False
 
     def roll(self) -> None:
         """
@@ -111,4 +121,4 @@ class Die(sprites.MultiSprite):
         """
 
         self.side = value
-        self.texture = self.textures[self.side - 1]
+        self.sprite.texture = self.sprite.textures[self.side - 1]

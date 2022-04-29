@@ -1,13 +1,12 @@
 """Class for the score zone with minimum requirements"""
 from components.zones import zone
-from components import coords
-from components.boxes import markable_box, min_value_box
+from components import coords, boxes
 
 
 class AtLeastZone(zone.Zone):
     """Score zone with minimum requirements"""
 
-    def add_box(self, box: min_value_box.MinValueBox, offset: coords.Coords) -> None:
+    def add_box(self, offset: coords.Coords, min_value: int) -> boxes.MarkableBox:
         """
         Add a markable box to this zone.
 
@@ -15,12 +14,12 @@ class AtLeastZone(zone.Zone):
             offset (Coords): Offset from the bottom left corner of the zone.
             label (str, optional): Text label to draw on the markable box. Defaults to "".
         """
-        if self.boxes:
-            last_box = self.boxes[-1]
-            if isinstance(last_box, min_value_box.MinValueBox):
-                box.prereq_box = last_box
-
-        super().add_box(box, offset)
+        return super().add_box(
+            boxes.MinValueBox,
+            offset=offset,
+            prereq_box=self.boxes[-1] if self.boxes else None,
+            min_value=min_value
+        )
 
     def get_score(self) -> int:
         """
@@ -34,6 +33,6 @@ class AtLeastZone(zone.Zone):
             [
                 1 if box.marked else 0
                 for box in self.boxes
-                if isinstance(box, markable_box.MarkableBox)
+                if isinstance(box, boxes.MarkableBox)
             ]
         )
