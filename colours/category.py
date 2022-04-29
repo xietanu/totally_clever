@@ -1,14 +1,14 @@
 """Colour and Colours"""
 from enum import Enum
 
-from colours import convert
+import arcade
 
 
 class Category(Enum):
     """Holds the colours used for the main categories in the game"""
 
-    SKY = convert.hex_colour_to_rgb_tuple("75CDD8")
-    ALABASTER = convert.hex_colour_to_rgb_tuple("F0F2E7")
-    SALMON = convert.hex_colour_to_rgb_tuple("FF8296")
-    SUNGLOW = convert.hex_colour_to_rgb_tuple("FFCA27")
-    LIBERTY = convert.hex_colour_to_rgb_tuple("6257B2")
+    SKY = arcade.color_from_hex_string("75CDD8")
+    ALABASTER = arcade.color_from_hex_string("F0F2E7")
+    SALMON = arcade.color_from_hex_string("FF8296")
+    SUNGLOW = arcade.color_from_hex_string("FFCA27")
+    LIBERTY = arcade.color_from_hex_string("6257B2")

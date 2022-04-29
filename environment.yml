@@ -12,3 +12,4 @@ dependencies:
   - pillow=9.0.1
   - pip:
     - arcade==2.6.10
+    - git+https://github.com/xietanu/pkg_arcade_sprite_ext.git@v0.1.0
